@@ -25,7 +25,7 @@
                  [com.cognitect/transit-cljs "0.8.207"]
 
                  ;; templating
-                 [dragonmark/web "0.1.2"]
+                 [dragonmark/web "0.1.3"]
                  ]
 
   :repositories [["snapshots"     "https://oss.sonatype.org/content/repositories/snapshots"],
