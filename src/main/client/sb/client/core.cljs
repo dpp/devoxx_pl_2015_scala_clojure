@@ -28,10 +28,12 @@
 (defn page []
   (xform page-text
          ["li" :* @chats]
-         ["button" {:onclick (fn [] (let [in (by-id "in")]
-                                      (-> in .-value t-write js/sendToServer)
-                                      (set! (.-value in) "")
-                                      ))}]
+         ["button"
+          {:onclick
+           (fn [] (let [in (by-id "in")]
+                    (-> in .-value t-write js/sendToServer)
+                    (set! (.-value in) "")
+                    ))}]
          ))
 
 (defn main []

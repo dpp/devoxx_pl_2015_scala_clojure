@@ -18,25 +18,22 @@ object Actorize extends InSession {
 
   def render = {
     <tail>
-      {
-      val clientProxy =
-        session.serverActorForClient("sb.client.core.receive",
-          shutdownFunc = Full(actor => postMsg.invoke('remove -> actor)),
-          dataFilter = transitWrite(_))
+      {val clientProxy =
+      session.serverActorForClient("sb.client.core.receive",
+        shutdownFunc = Full(actor => postMsg.invoke('remove -> actor)),
+        dataFilter = transitWrite(_))
 
-      postMsg.invoke('add -> clientProxy) // register with the chat server
+    postMsg.invoke('add -> clientProxy) // register with the chat server
 
-      // Create a server-side Actor that will receive messages when
-      // a function on the client is called
-      val serverActor = new LiftActor {
-        override protected def messageHandler =
-        {
-          case JString(str) => postMsg.invoke(ClojureInterop.transitRead(str))
-        }
+    // Create a server-side Actor that will receive messages when
+    // a function on the client is called
+    val serverActor = new LiftActor {
+      override protected def messageHandler = {
+        case JString(str) => postMsg.invoke(ClojureInterop.transitRead(str))
       }
-
-      Script(JsRaw("var sendToServer = " + session.clientActorFor(serverActor).toJsCmd).cmd)
     }
+
+    Script(JsRaw("var sendToServer = " + session.clientActorFor(serverActor).toJsCmd).cmd)}
     </tail>
 
   }
