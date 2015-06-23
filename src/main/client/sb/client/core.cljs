@@ -29,7 +29,7 @@
   (xform page-text
          ["li" :* @chats]
          ["button"
-          {:onclick
+          {:on-click
            (fn [] (some->
                     (swap-id! "in" "")
                     first
