@@ -1,9 +1,9 @@
 (ns sb.client.core
   (:require [dragonmark.util.core]
-            [sb.client.client-util :refer [by-id t-read t-write]]
+            [sb.client.client-util :refer [t-read t-write by-id swap-id!]]
             [reagent.core :refer [atom adapt-react-class render-component]]
             [dragonmark.web.core :refer [xf xform]])
-  (:require-macros [dragonmark.web.mac :as mac])
+  (:require-macros [dragonmark.web.mac :as mac :refer [insert-template]])
   )
 
 (enable-console-print!)
@@ -14,7 +14,7 @@
   (let
     [msg (t-read x)]
     (cond
-      (seq? msg)
+      (sequential? msg)
       (reset! chats (vec msg))
 
       (string? msg)
@@ -23,17 +23,18 @@
       :else nil))
   )
 
-(def page-text (mac/insert-template "chat.html"))
+(def page-text (insert-template "chat.html"))
 
 (defn page []
   (xform page-text
          ["li" :* @chats]
          ["button"
           {:onclick
-           (fn [] (let [in (by-id "in")]
-                    (-> in .-value t-write js/sendToServer)
-                    (set! (.-value in) "")
-                    ))}]
+           (fn [] (some->
+                    (swap-id! "in" "")
+                    first
+                    t-write
+                    js/sendToServer))}]
          ))
 
 (defn main []

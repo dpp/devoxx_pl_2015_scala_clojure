@@ -17,24 +17,23 @@
 (defn run-loop
   []
   (go
-    (do
-      (match
-          (<! chat-server)
-          [:add lst]
-          (do
-            (send! lst (take-last 40 @chats))
-            (swap! listeners conj lst))
+    (match
+      (<! chat-server)
+      [:add lst]
+      (do
+        (send! lst (take-last 40 @chats))
+        (swap! listeners conj lst))
 
-          [:remove lst]
-          (swap! listeners (fn [info] (remove #(identical? lst %) info)))
+      [:remove lst]
+      (swap! listeners (fn [info] (remove #(identical? lst %) info)))
 
-          (msg :guard string?)
-          (do
-            (doseq [f @listeners] (send! f msg))
-            (swap! chats conj msg))
+      (msg :guard string?)
+      (do
+        (doseq [f @listeners] (send! f msg))
+        (swap! chats conj msg))
 
-          :else nil)
-        (run-loop))))
+      :else nil)
+    (run-loop)))
 
 (defonce runner (run-loop))
 
