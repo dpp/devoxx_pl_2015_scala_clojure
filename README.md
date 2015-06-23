@@ -1,4 +1,4 @@
-# Scala Bay 2015
+# Devoxx Poland 2015
 
 Code for [@dpp](https://twitter.com/dpp)'s Devoxx Poland 2015
 presentation. It's a blend of Scala, Lift, Clojure,
